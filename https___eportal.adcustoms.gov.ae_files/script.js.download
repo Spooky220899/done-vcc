@@ -1,0 +1,192 @@
+
+
+function loadPdf(pdfData){
+	
+console.log('PDF loding started::');
+
+//var pdfData=document.getElementById('jsf:evccForm:base64Content').value;
+var pdfBinary= atob(pdfData);
+// Loaded via <script> tag, create shortcut to access PDF.js exports.
+var pdfjsLib = window['pdfjs-dist/build/pdf'];
+
+// The workerSrc property shall be specified.
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+//alert('OK10');
+// Using DocumentInitParameters object to load binary data.
+var loadingTask = pdfjsLib.getDocument({data: pdfBinary});
+loadingTask.promise.then(function(pdf) {
+  console.log('PDF loaded');
+  
+  // Fetch the first page
+  var pageNumber = 1;
+  pdf.getPage(pageNumber).then(function(page) {
+    console.log('Page loaded');
+    //alert('OK11');
+    var scale = 1.5;
+    var viewport = page.getViewport({scale: scale});
+
+    // Prepare canvas using PDF page dimensions
+    var canvas = document.getElementById('the-canvas');
+    var context = canvas.getContext('2d');
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+
+    // Render PDF page into canvas context
+    var renderContext = {
+      canvasContext: context,
+      viewport: viewport
+    };
+    var renderTask = page.render(renderContext);
+    renderTask.promise.then(function () {
+      console.log('Page rendered');
+    });
+  });
+}, function (reason) {
+  // PDF loading error
+  console.error(reason);
+  displayMessage('FAILURE');
+  //alert('OK13');
+  return false;
+});
+
+	//hideLoader();
+	//displayMessage(true);
+	//alert('OK12');
+	return true;
+}
+
+
+
+
+
+
+function showSuccessMessage() {
+	  var x = document.getElementById("snackbar-success");
+	  x.className = "show";	  
+	  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+	}
+function showFailureMessage() {
+	  var x = document.getElementById("snackbar-failure");
+	  x.className = "show";	  
+	  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+	}
+
+
+
+
+
+function generateDownloadLink(pdfData) {
+	//var pdfData=document.getElementById('base64Content').value;
+	const linkSource = 'data:application/pdf;base64,'+pdfData;
+	const downloadLink = document.createElement("a");
+	const fileName = "eVCC.pdf";
+	downloadLink.href = linkSource;
+	downloadLink.download = fileName;
+	downloadLink.id="download";
+	downloadLink.html="download";
+	//console.log("Download link created"+downloadLink.id);
+	document.getElementById('downloadPanel').appendChild(downloadLink);	
+ }
+
+function downloadPDF(){	
+	var downloadLink = document.getElementById("download");
+	downloadLink.click();
+}
+
+
+
+function getPDFDocument(){
+	
+	var currentURL=window.location.href;
+	
+	console.log("Current Location::"+currentURL);
+	currentURL=currentURL.substring(currentURL.lastIndexOf('?')+1);
+	var docIdPart=currentURL.substring(0,currentURL.indexOf('&'));
+	var userIdPart=currentURL.substring(currentURL.indexOf('&'));
+	var docId=docIdPart.substring(docIdPart.indexOf('=')+1);
+	var userId=userIdPart.substring(userIdPart.indexOf('=')+1);
+	console.log("Document Id::"+docId+" :: User ID::"+userId);
+	//alert('OK2');
+	var req = new Object();
+	req.documentId =docId;
+	req.userId  = userId;
+	 
+	var reqWrapper = new Object();
+	reqWrapper.req=	req;	
+	console.log(JSON.stringify(reqWrapper));
+	var xhr = new XMLHttpRequest();
+	//alert('OK3');
+	console.log("Host::"+endpointAddressConf);
+	var URL=endpointAddressConf+"/restv2/ADCA_eVCC_Verification.ws.provider.rs:eVCCVerification/get_eVCCDocument";
+	xhr.open("POST",URL, true);
+	var response=null;
+	xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+	
+	xhr.onreadystatechange = function() { 
+		alert('Current State::'+this.readyState);
+	    if (this.readyState === XMLHttpRequest.DONE) {
+	    	//alert('OK5::'+this.status);
+	    	//var temp = JSON.parse(xhr.response);
+	    	alert('OK5--dummy');
+	    	alert('Keys::'+xhr.response);
+	    	
+	    	if( this.status === 200){
+	    		//alert('OK6');
+	    		var pdfBase64Content=JSON.parse(xhr.response).base64Content;
+	    		if(pdfBase64Content==null || pdfBase64Content.length<1){
+	    			//alert('OK7');
+	    			hideLoader();
+	    			displayMessage(false);
+	    			return false;
+	    		}else{
+	    			document.getElementById('base64Content').value=JSON.parse(xhr.response).base64Content;
+	    			//alert('OK8');
+		    		generateDownloadLink();
+		 	        return loadPdf();
+	    		}
+	    		
+	    		
+	    	}else{
+	    		hideLoader();
+	    		displayMessage(false);
+	    	}
+	      
+	       
+	    }
+	
+	
+	}	;
+	
+	xhr.send(JSON.stringify(reqWrapper));
+	//alert('OK4');
+	
+}
+
+
+function displayMessage(responseMessage){
+	
+	if(responseMessage=='SUCCESS'){
+		
+		showSuccessMessage();
+		var downloadPanel = document.getElementById('downloadPanel');
+		downloadPanel.style.visibility='visible';
+		var downloadPanel = document.getElementById('failurePanel');
+		downloadPanel.style.visibility='hidden';
+		
+		
+	}else{
+		showFailureMessage();	
+		var downloadPanel = document.getElementById('downloadPanel');
+		downloadPanel.style.visibility='hidden';
+		var downloadPanel = document.getElementById('failurePanel');
+		downloadPanel.style.visibility='visible';
+	}
+}
+
+
+function hideLoader(){
+	
+	var loaderPanel=document.getElementById('loderPanel');
+	//console.log('Loader PaneL::'+loaderPanel);
+	loaderPanel.style.display = 'none';
+}

@@ -1,0 +1,145 @@
+#the-canvas {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+   
+	
+}
+
+
+
+.primaryheader {
+
+    background-color: rgb(91, 109, 103);
+    width: 100% !important;
+    position: inherit;
+    z-index: 99;
+    height: 6rem !important;
+    box-shadow: rgb(0 0 0/ 20%) 0px 4px 8px 0px !important;
+    flex-direction: row;
+    box-sizing: border-box;
+    display: flex;
+    place-content: center flex-start;
+}
+
+
+
+body{
+	
+	background-image: url('/bg.jpg') !important;		
+	margin: 0;
+	background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    margin: 0;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    display: table;
+}
+
+.center {
+    flex-direction: row;
+	box-sizing: border-box;
+	display: flex;
+	place-content: center flex-start;
+  
+}
+
+.loader {
+  margin:auto	;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 300px;
+  height: 300px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+div.image::before {
+   /*content:url('/logo3.png');*/
+   margin-left:10%;
+}
+
+
+
+#snackbar-success {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px; 
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 90%;
+  top: 30px;
+  height:40px;
+  font-size: 20px;
+}
+
+#snackbar-failure {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px; 
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 90%;
+  top: 30px;
+  height:40px;
+  font-size: 20px;
+}
+
+#snackbar-success.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+   background-color: green;
+}
+
+#snackbar-failure.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+   background-color: red;
+}
+
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;} 
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;} 
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+

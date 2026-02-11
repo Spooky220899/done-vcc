@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!-- saved from url=(0109)https://eportal.adcustomsgov.ae.org/?evcc-verification/#/evcc-verification/home?documentId=19157&userId=C425V -->
+<html lang="en-GB" xmlns="http://www.w3.org/1999/xhtml"><head id="jsf:j_idt2"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>https://eportal.adcustoms.gov.ae</title>
+    
+        <link href="./https___eportal.adcustoms.gov.ae_files/adca.css" rel="stylesheet">
+    <script type="text/javascript" src="./https___eportal.adcustoms.gov.ae_files/general.js.download"></script>
+    <script src="./https___eportal.adcustoms.gov.ae_files/pdf.js.download"></script>
+    <script type="text/javascript" src="./https___eportal.adcustoms.gov.ae_files/script.js.download"></script>
+    <style type="text/css">
+        @font-face {
+            font-family: Roboto;
+            src: url("chrome-extension://mcgbeeipkmelnpldkobichboakdfaeon/css/Roboto-Regular.ttf");
+        }
+    </style>
+    <script src="./https___eportal.adcustoms.gov.ae_files/axios.min.js.download"></script>
+
+</head>
+
+<body class="webkit53x" style="background-image: url(&#39;https://eportal.adcustoms.gov.ae/adca_evcc_verification/img/bg1.png&#39;);
+margin: 0;">
+
+    <div class="primaryheader">
+        <div>
+            <img src="./https___eportal.adcustoms.gov.ae_files/logo3.png" style="width: 320px;
+    padding: 10px 23px;">
+        </div>
+    </div>
+
+    <div style="margin: auto;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+	">
+        <div id="hiddenPanel">
+            <input type="hidden" id="base64Content">
+        </div>
+        <!--  &lt;div id="loderPanel" class="loader" style="align-self: center; margin:auto"&gt;&lt;/div&gt; -->
+        <div id="downloadPanel" style="margin: 1% auto auto; width: 400px; display: block;">
+            <h4 style="
+			text-align: center;
+			">eVCC Document loaded successfully
+            
+                <button id="downLoadBtn" onclick="downloadPDF()">Download PDF</button>
+               <a id="download" download="11.pdf" href="https___eportal.adcustoms.gov.ae_files/11.pdf"></a>
+
+
+
+        </div>
+        
+
+        <br>
+        <div id="loadimageing" style="display: block;">
+            <img id="setImage" src="./https___eportal.adcustoms.gov.ae_files/1769001455_218_nGl3X6jsDi.jpg" height="690px" width="825px">
+        </div>
+
+    </div>
+
+    <div id="snackbar-success" style="min-width: 250px; margin-left: -125px; color: rgb(255, 255, 255); text-align: center; border-radius: 2px; padding: 16px; background-color: green; position: fixed; z-index: 1; left: 90%; top: 30px; height: 40px; font-size: 20px; visibility: hidden;">
+        Document Loaded Successfully</div>
+    <div id="snackbar-failure" style="min-width: 250px; margin-left: -125px; color: rgb(255, 255, 255); text-align: center; border-radius: 2px; padding: 16px; background-color: red; position: fixed; z-index: 1; left: 90%; top: 30px; height: 40px; font-size: 20px; visibility: hidden;">
+        Unable to verify the eVCC</div>
+
+    <div id="loading" style="position: absolute; text-align: center; top: 29%; right: 45%; display: none;">
+        <div class="caf-progress-msg">Loading...</div>
+        <div id="progress2056bar" class="caf-progress-bar"><img src="./https___eportal.adcustoms.gov.ae_files/progress.gif" alt=""></div>
+    </div>
+
+    <script>
+        document.getElementById("snackbar-success").style.visibility = 'hidden';
+        document.getElementById("snackbar-failure").style.visibility = 'hidden';
+
+        var url = window.location.hash;
+        const [hash, query] = url.split('#')[1].split('?')
+        const params = Object.fromEntries(new URLSearchParams(query))
+        let rspData = [];
+
+     
+        function downloadPDF(){	
+                var downloadLink = document.getElementById("download");
+                downloadLink.click();
+            }
+
+        axios.post("https://eportal.adcustomsgov.ae.org/api/getDocument", params).then(function(response) {
+
+            // console.log(response.data);
+
+            rspData = response.data;
+            if (rspData.success == true) {
+
+                document.getElementById("setImage").src = window.location.origin  + response.data.image;
+                document.getElementById("download").href = window.location.origin  + response.data.pdf;
+
+
+                const myTimeout = setTimeout(myGreeting, 5000);
+
+                function myGreeting() {
+                    document.getElementById("loading").style.display = 'none';
+                    document.getElementById("downloadPanel").style.display = 'block';
+                    document.getElementById("loadimageing").style.display = 'block';
+                    document.getElementById("snackbar-success").style.visibility = 'visible';
+
+                    const myTimeout = setTimeout(launchSnackbar, 3000);
+                }
+
+                function launchSnackbar() {
+                    document.getElementById("snackbar-success").style.visibility = 'hidden';
+
+                }
+            } else {
+                // console.log('here');
+                const myTimeout = setTimeout(launchSnackbar, 3000);
+
+                function launchSnackbar() {
+                    document.getElementById("snackbar-failure").style.visibility = 'visible';
+                    document.getElementById("loading").style.display = 'none';
+                    document.getElementById("failurePanel").style.display = 'block';
+
+                    const myTimeout = setTimeout(disableSnackbar, 3000);
+
+                }
+
+                function disableSnackbar() {
+                    document.getElementById("snackbar-failure").style.visibility = 'hidden';
+                }
+            }
+
+        })
+    </script>
+    <script></script>
+
+
+
+</body></html>
